@@ -37,33 +37,40 @@ public class C {
     ArrayList<Integer>[] digraph;
     int[] color;
     ArrayList<Integer> ans;
+    ArrayList<Integer>[] weights;
     public void solve() throws IOException {
         int n = in.nextInt(), m = in.nextInt();
         color = new int[n];
         ans = new ArrayList<Integer>();
         Arrays.fill(color, 0);
         digraph = new ArrayList[n];
+        weights = new ArrayList[n];
         for (int i = 0; i < n; i++) {
             digraph[i] = new ArrayList<Integer>();
+            weights[i] = new ArrayList<Integer>();
+            for (int j = 0; j < n; j++) {
+                weights[i].add(j);
+            }
         }
-        int[][] weight = new int[n][n];
+
         int start = in.nextInt(), end = in.nextInt();
         for (int i = 0; i < m; i++) {
             int a = in.nextInt() - 1, b = in.nextInt() - 1;
             digraph[a].add(b);
-            weight[a][b] = in.nextInt();
+            weights[a].set(b, in.nextInt());
         }
 
         topSort();
         int[] d = new int[n];
-        Arrays.fill(d, 300000001);
+        Arrays.fill(d, 200000001);
         d[start - 1] = 0;
         for (int i = n - 1; i >= 0; i--) {
             for (int v : digraph[ans.get(i)]) {
-                d[v] = Math.min(d[v], d[ans.get(i)] + weight[ans.get(i)][v]);
+                if (d[ans.get(i)] != 200000001)
+                    d[v] = Math.min(d[v], d[ans.get(i)] + weights[ans.get(i)].get(v));
             }
         }
-        out.print(d[end - 1] != 300000001 ? d[end - 1] : "Unreachable");
+        out.print(d[end - 1] != 200000001 ? d[end - 1] : "Unreachable");
 
     }
 
