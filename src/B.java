@@ -35,19 +35,17 @@ public class B implements Runnable {
     ArrayList<Integer>[] digraph, digraph_t;
     boolean[] visited;
     ArrayList<Integer> order;
-    ArrayList<ArrayList<Integer>> component;
+    ArrayList<Integer> component;
     int count = 0;
     boolean cycle = false;
-    ArrayList<Integer> ans;
 
     public void solve() throws IOException {
         int n = in.nextInt(), m = in.nextInt();
-        ans = new ArrayList<Integer>();
         digraph = new ArrayList[n];
         digraph_t = new ArrayList[n];
         visited = new boolean[n];
         order = new ArrayList<Integer>();
-        component = new ArrayList<ArrayList<Integer>>();
+        component = new ArrayList<Integer>();
         for (int i = 0; i < n; i++) {
             digraph[i] = new ArrayList<Integer>();
             digraph_t[i] = new ArrayList<Integer>();
@@ -65,22 +63,20 @@ public class B implements Runnable {
         }
 
         Arrays.fill(visited, false);
-
+        int[] ans = new int[n];
         for(int v = 0; v < n; v++) {
             int u = order.get(n - 1 - v);
             if (!visited[u]) {
-                component.add(new ArrayList<Integer>());
                 dfs2(u);
+                for (int w : component) {
+                    ans[w] = count + 1;
+                }
+                component.clear();
                 count++;
             }
         }
-        out.println(component.size());
-        int[] ans = new int[n];
-        for(ArrayList<Integer> comp : component) {
-            for (int v : comp) {
-               ans[v] = component.indexOf(comp) + 1;
-            }
-        }
+        out.println(count);
+
         for(int i : ans) {
             out.print(i + " ");
         }
@@ -99,7 +95,7 @@ public class B implements Runnable {
 
     public void dfs2(int u) {
         visited[u] = true;
-        component.get(count).add(u);
+        component.add(u);
         for(int w : digraph_t[u]) {
             if (!visited[w])
                 dfs2(w);
@@ -109,8 +105,8 @@ public class B implements Runnable {
 
     public void run() {
         try {
-            in = new FastScanner(new File("input.txt"));
-            out = new PrintWriter("output.txt");
+            in = new FastScanner(new File("cond.in"));
+            out = new PrintWriter("cond.out");
 
             solve();
 
