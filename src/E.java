@@ -32,48 +32,62 @@ public class E {
     }
     FastScanner in;
     PrintWriter out;
-    ArrayList<Integer>[] digraph, digraph_t;
-    boolean[] visited;
-    ArrayList<Integer> order;
-    ArrayList<Integer> component;
+    ArrayList<Integer>[] digraph;
     int[] color;
-    int count = 0;
-    ArrayList<Integer> ans;
-    boolean cycle = false;
-
+    int start, end;
+    int[] parent;
     public void solve() throws IOException {
         int n = in.nextInt(), m = in.nextInt();
         digraph = new ArrayList[n];
         color = new int[n];
-        ans = new ArrayList<Integer>();
-        if (!cycle) {
-            out.println("NO");
+        parent = new int[n];
+        for (int i = 0; i < n; i++) {
+            digraph[i] = new ArrayList<Integer>();
+        }
+        for (int i = 0; i < m; i++) {
+            digraph[in.nextInt() - 1].add(in.nextInt() - 1);
+        }
+        start = -1;
+        Arrays.fill(parent, - 1);
+        for (int i = 0; i < n; i++) {
+            if (dfs(i))
+                break;
+        }
+        if (start == -1) {
+            out.print("NO");
         }
         else {
-            int j = ans.size() - 1;
-            out.print(ans.get(j));
+            out.println("YES");
+            ArrayList<Integer> cycle = new ArrayList<Integer>();
+            cycle.add(start + 1);
+            for (int v = end; v != start; v = parent[v]) {
+                cycle.add(v + 1);
+            }
+            Collections.reverse(cycle);
+            for (int k : cycle) {
+                out.print(k + " ");
+            }
         }
     }
 
-    public void dfs(int u) {
-        if (cycle) {
-            return;
-        }
-        if (color[u] != 2) {
-            color[u] = 1;
-            for(int v : digraph[u]) {
-                if (color[v] == 0) {
-                    dfs(v);
-                }
-                if (color[v] == 1) {
-                    cycle = true;
-                    return;
-                }
+    public boolean dfs(int u) {
+        color[u] = 1;
+        for(int v : digraph[u]) {
+            if (color[v] == 0) {
+                parent[v] = u;
+                if (dfs(v))
+                    return true;
             }
-            color[u] = 2;
-            ans.add(u + 1);
+            if (color[v] == 1) {
+                end = u;
+                start = v;
+                return true;
+            }
         }
+        color[u] = 2;
+        return false;
     }
+
 
     public void run() {
         try {
