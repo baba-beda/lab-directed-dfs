@@ -1,12 +1,9 @@
-import sun.font.FontRunIterator;
-
 import java.io.*;
 import java.util.*;
-
 /**
- * Created by daria on 30.09.14.
+ * Created by daria on 01.10.14.
  */
-public class C {
+public class D {
     class FastScanner {
         StreamTokenizer st;
 
@@ -32,52 +29,43 @@ public class C {
             return st.sval;
         }
     }
-    class Pair {
-        int first;
-        int last;
-        Pair() {
-            first = 0;
-            last = 0;
-        }
-
-        Pair(int a, int b) {
-            first = a;
-            last = b;
-        }
-    }
-
-
     FastScanner in;
     PrintWriter out;
-    ArrayList<Pair>[] digraph;
+    ArrayList<Integer>[] digraph;
     int[] color;
-    ArrayList<Integer> ans;
+
     public void solve() throws IOException {
-        int n = in.nextInt(), m = in.nextInt();
-        color = new int[n];
-        ans = new ArrayList<Integer>();
-        Arrays.fill(color, 0);
+        int n = in.nextInt(), m = in.nextInt(), s = in.nextInt();
         digraph = new ArrayList[n];
+        color = new int[n];
+        Arrays.fill(color, 0);
         for (int i = 0; i < n; i++) {
-            digraph[i] = new ArrayList<Pair>();
+            digraph[i] = new ArrayList<Integer>();
         }
-
-        int start = in.nextInt(), end = in.nextInt();
         for (int i = 0; i < m; i++) {
-            digraph[in.nextInt() - 1].add(new Pair(in.nextInt() - 1, in.nextInt()));
+            digraph[in.nextInt() - 1].add(in.nextInt() - 1);
         }
+        if (dfs(s - 1))
+            out.println("First player wins");
+        else
+            out.println("Second player wins");
 
-        int[] d = new int[n];
+    }
 
-        /* здесь могла быть ваша реклама
-        и какой-то код проверки, который я так и не осилила написать
-         */
+    public boolean dfs(int u) {
+        boolean aux = false;
+        color[u] = 1;
+        for (int v : digraph[u]) {
+                if (!dfs(v))
+                    aux = true;
+        }
+        return aux;
     }
 
     public void run() {
         try {
-            in = new FastScanner(new File("shortpath.in"));
-            out = new PrintWriter("shortpath.out");
+            in = new FastScanner(new File("game.in"));
+            out = new PrintWriter("game.out");
 
             solve();
 
@@ -88,6 +76,6 @@ public class C {
     }
 
     public static void main(String[] arg) {
-        new C().run();
+        new D().run();
     }
 }
